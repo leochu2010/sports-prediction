@@ -1,0 +1,1 @@
+Football clubs information were extracted from sofifa.com which got its data from FIFA football game. Data extraction was carried out with webscraper.io's service. Where sitemap.json is the script for webscraper.io to do scraping.
