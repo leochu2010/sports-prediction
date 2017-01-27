@@ -1,2 +1,4 @@
 eclipse.preferences.version=1
-encoding//scripts/clean_sofifa_data.py=utf-8
+encoding//data/whoscored/scrapy/sports/sports/middlewares.py=utf-8
+encoding//data/whoscored/scrapy/sports/sports/settings.py=utf-8
+encoding//data/whoscored/scrapy/sports/sports/spiders/whoscored.py=utf-8

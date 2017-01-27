@@ -3,11 +3,11 @@
 
 # In[2]:
 
-def get_cleaned_sofifa_data():
+def clean_sofifa_data(data_csv='../data/sofifa/sofifia-english-league-championship.csv'):
 
     import pandas as pd
 
-    sofifa_df = pd.read_csv('../data/sofifa/sofifia-english-league-championship.csv')
+    sofifa_df = pd.read_csv(data_csv)
     
     
     # In[3]:
