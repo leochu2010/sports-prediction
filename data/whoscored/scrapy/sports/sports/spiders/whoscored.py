@@ -5,6 +5,7 @@ import time
 from selenium import webdriver
 from scrapy_splash import SplashRequest
 from itertools import chain
+from chardet.hebrewprober import MIN_MODEL_DISTANCE
 
 
 #run with command: scrapy crawl whoscored
@@ -14,24 +15,29 @@ class WhoscoredSpider(scrapy.Spider):
     name = "whoscored"
     allowed_domains = ["www.whoscored.com"]
         
-    START_URL="https://www.whoscored.com/Matches/1085146/Live"
-        
     DOMAIN = 'www.whoscored.com'
+    MATCH_ID = 1085239    
+    MIN_MATCH_ID = 1084239
 
     def start_requests(self):
-        urls = [
-            self.START_URL,
-            "https://www.whoscored.com/Matches/1085239",            
-        ]
-        for url in urls:
-            #yield scrapy.Request(url=url, callback=self.parse)
-            yield SplashRequest(url, self.parse,
+        
+        current_match_id = self.MATCH_ID 
+        while current_match_id > self.MIN_MATCH_ID:
+            current_match_id -= 1
+            match_link = "https://www.whoscored.com/Matches/"+str(current_match_id)+"/Live"
+            
+            yield SplashRequest(match_link, self.parse,
                 endpoint='render.html',
-                args={'wait': 0.5},
-                )
+                args={'wait': 2},
+                )            
 
     def parse(self, response):
 
+        match_report_relative_link = response.css('div.layout-content-2col-left li:nth-of-type(5) a::attr(href)').extract_first()
+        if match_report_relative_link is None:
+            self.logger.info("%s doesn't have match detail", response.url)
+            return
+            
         match_report_link = 'https://'+self.DOMAIN+response.css('div.layout-content-2col-left li:nth-of-type(5) a::attr(href)').extract_first()        
         
         match = {
@@ -45,21 +51,23 @@ class WhoscoredSpider(scrapy.Spider):
             'date': response.css("div.info-block:nth-of-type(3) dd:nth-of-type(2)::text").extract_first(),
             'tournament_name': response.css("div#content-header a::text").extract_first(),
             'tournament_link': response.css("div#content-header a::attr(href)").extract_first(),
-            'country': response.css("span.iconize::text").extract_first()
+            'country': response.css("span.iconize::text").extract_first(),
+            'match_link': response.url, 
+            'match_report_link': match_report_link
         }
-        
-        
-        #self.logger.info("Visited %s", response.url)        
-        
-        if len(match_report_link) > 10:            
-            #return scrapy.Request(match_report_link, callback=self.parse_match_report)
+                    
+        #return scrapy.Request(match_report_link, callback=self.parse_match_report)
+        if len(match_report_link) > 30:
+            self.logger.info("%s has match detail, start extracting", response.url) 
             request = SplashRequest(match_report_link, 
                 callback=self.parse_match_report,
                 endpoint='render.html',
-                args={'wait': 0.5}                
+                args={'wait': 3}                
                 )
             request.meta['match'] = match
             yield request
+        else:            
+            self.logger.info("%s doesn't have match detail", response.url) 
                     
     def parse_match_report(self, response):
         
