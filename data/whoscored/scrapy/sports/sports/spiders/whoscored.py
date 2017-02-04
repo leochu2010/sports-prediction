@@ -17,7 +17,7 @@ class WhoscoredSpider(scrapy.Spider):
         
     DOMAIN = 'www.whoscored.com'
     MATCH_ID = 1085239    
-    MIN_MATCH_ID = 1084239
+    MIN_MATCH_ID = 1084209
 
     def start_requests(self):
         
@@ -62,9 +62,9 @@ class WhoscoredSpider(scrapy.Spider):
             request = SplashRequest(match_report_link, 
                 callback=self.parse_match_report,
                 endpoint='render.html',
-                args={'wait': 3}                
+                args={'wait': 2},
+                meta = {'match':match}
                 )
-            request.meta['match'] = match
             yield request
         else:            
             self.logger.info("%s doesn't have match detail", response.url) 
@@ -72,7 +72,10 @@ class WhoscoredSpider(scrapy.Spider):
     def parse_match_report(self, response):
         
         match = response.meta['match']
-        
+                
+        if len(response.css("div.stat-group.no-top-margin div.stat:nth-of-type(1) span.stat-value:nth-of-type(1)")) == 0:
+           self.logger.info("url:%s, body:%s",response.url,response.css("body").extract()) 
+           
         match['home_shots'] = response.css("div.stat-group.no-top-margin div.stat:nth-of-type(1) span.stat-value:nth-of-type(1) span::text").extract_first()
         match['away_shots'] = response.css("div.stat-group.no-top-margin div.stat:nth-of-type(1) span.stat-value:nth-of-type(3) span::text").extract_first()
         match['home_shots_on_target'] = response.css("div.stat-group.no-top-margin div.stat:nth-of-type(2) span.stat-value:nth-of-type(1) span::text").extract_first()
