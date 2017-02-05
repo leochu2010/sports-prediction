@@ -14,6 +14,7 @@ BOT_NAME = 'sports'
 SPIDER_MODULES = ['sports.spiders']
 NEWSPIDER_MODULE = 'sports.spiders'
 
+RETRY_TIMES = 5
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'sports (+http://www.yourdomain.com)'
@@ -28,7 +29,7 @@ ROBOTSTXT_OBEY = True
 # See http://scrapy.readthedocs.org/en/latest/topics/settings.html#download-delay
 # See also autothrottle settings and docs
 #DOWNLOAD_DELAY = 3
-DOWNLOAD_DELAY = 3
+DOWNLOAD_DELAY = 2
 # The download delay setting will honor only one of:
 #CONCURRENT_REQUESTS_PER_DOMAIN = 16
 #CONCURRENT_REQUESTS_PER_IP = 16
