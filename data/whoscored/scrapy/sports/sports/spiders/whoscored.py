@@ -16,8 +16,19 @@ class WhoscoredSpider(scrapy.Spider):
     allowed_domains = ["www.whoscored.com"]
         
     DOMAIN = 'www.whoscored.com'
-    MATCH_ID = 1085239    
-    MIN_MATCH_ID = 1080000
+    #2015/16
+    #MATCH_ID = 959257 (959532)         
+    #MIN_MATCH_ID = 958445 (958436)
+    
+    #2014/15
+    #829900-830250        
+    #MATCH_ID = 831500
+    #MIN_MATCH_ID = 828500
+    
+    #2013/14
+    #719891-721561
+    MATCH_ID = 722600
+    MIN_MATCH_ID = 718800
     
     RETRY_LIST = []
     RETRY_LOG = open("retry.log","w")
@@ -29,92 +40,26 @@ class WhoscoredSpider(scrapy.Spider):
             "https://www.whoscored.com/Matches/1085217/Live"            
             }
         
-        urls3 = {
-            "https://www.whoscored.com/Matches/1085217/Live",
-            "https://www.whoscored.com/Matches/1085170/Live",
-            "https://www.whoscored.com/Matches/1085168/Live"
+        urls = {
             }
         
         
-        urls = {
-            "https://www.whoscored.com/Matches/1085217/Live",
-            "https://www.whoscored.com/Matches/1085170/Live",
-            "https://www.whoscored.com/Matches/1085168/Live",
-            "https://www.whoscored.com/Matches/1085166/Live",
-            "https://www.whoscored.com/Matches/1085165/Live",
-            "https://www.whoscored.com/Matches/1085164/Live",
-            "https://www.whoscored.com/Matches/1085161/Live",
-            "https://www.whoscored.com/Matches/1085153/Live",
-            "https://www.whoscored.com/Matches/1085148/Live",
-            "https://www.whoscored.com/Matches/1085126/Live",
-            "https://www.whoscored.com/Matches/1085116/Live",
-            "https://www.whoscored.com/Matches/1085110/Live",
-            "https://www.whoscored.com/Matches/1085109/Live",
-            "https://www.whoscored.com/Matches/1085107/Live",
-            "https://www.whoscored.com/Matches/1085106/Live",
-            "https://www.whoscored.com/Matches/1085102/Live",
-            "https://www.whoscored.com/Matches/1085086/Live",
-            "https://www.whoscored.com/Matches/1085082/Live",
-            "https://www.whoscored.com/Matches/1085076/Live",
-            "https://www.whoscored.com/Matches/1085074/Live",
-            "https://www.whoscored.com/Matches/1085058/Live",
-            "https://www.whoscored.com/Matches/1085052/Live",
-            "https://www.whoscored.com/Matches/1085048/Live",
-            "https://www.whoscored.com/Matches/1085035/Live",
-            "https://www.whoscored.com/Matches/1085012/Live",
-            "https://www.whoscored.com/Matches/1085010/Live",
-            "https://www.whoscored.com/Matches/1085009/Live",
-            "https://www.whoscored.com/Matches/1085005/Live",
-            "https://www.whoscored.com/Matches/1084990/Live",
-            "https://www.whoscored.com/Matches/1084987/Live",
-            "https://www.whoscored.com/Matches/1084971/Live",
-            "https://www.whoscored.com/Matches/1084969/Live",
-            "https://www.whoscored.com/Matches/1084964/Live",
-            "https://www.whoscored.com/Matches/1084961/Live",
-            "https://www.whoscored.com/Matches/1084950/Live",
-            "https://www.whoscored.com/Matches/1084932/Live",
-            "https://www.whoscored.com/Matches/1084931/Live",
-            "https://www.whoscored.com/Matches/1084925/Live",
-            "https://www.whoscored.com/Matches/1084924/Live",
-            "https://www.whoscored.com/Matches/1084918/Live",
-            "https://www.whoscored.com/Matches/1084917/Live",
-            "https://www.whoscored.com/Matches/1084911/Live",
-            "https://www.whoscored.com/Matches/1084909/Live",
-            "https://www.whoscored.com/Matches/1084906/Live",
-            "https://www.whoscored.com/Matches/1084900/Live",
-            "https://www.whoscored.com/Matches/1084899/Live",
-            "https://www.whoscored.com/Matches/1084898/Live",
-            "https://www.whoscored.com/Matches/1084896/Live",
-            "https://www.whoscored.com/Matches/1084897/Live",
-            "https://www.whoscored.com/Matches/1084894/Live",
-            "https://www.whoscored.com/Matches/1084887/Live",
-            "https://www.whoscored.com/Matches/1084883/Live",
-            "https://www.whoscored.com/Matches/1084881/Live",
-            "https://www.whoscored.com/Matches/1084879/Live",
-            "https://www.whoscored.com/Matches/1084870/Live"
+        urls1 = {
+            "https://www.whoscored.com/Matches/1083858/Live",
+            "https://www.whoscored.com/Matches/1083598/Live",
+            "https://www.whoscored.com/Matches/1083599/Live",
+            "https://www.whoscored.com/Matches/1083600/Live",
+            "https://www.whoscored.com/Matches/1083601/Live",
+            "https://www.whoscored.com/Matches/1083602/Live"
         }
         
-        '''
+        
         for url in urls:
             yield SplashRequest(url, self.parse,
                 endpoint='render.html',
                 args={'wait': 2},
                 priority = -1
                 )            
-
-            while len(self.RETRY_LIST) > 0:                
-                retry_url = self.RETRY_LIST.pop()       
-                     
-                self.logger.info("retry failed matches: %s",retry_url)
-                
-                yield SplashRequest(retry_url, self.parse,
-                    endpoint='render.html',
-                    args={'wait': 2},
-                    dont_filter=True,
-                    priority=1
-                    )
-                
-        '''
         
         current_match_id = self.MATCH_ID 
         while current_match_id > self.MIN_MATCH_ID:
@@ -123,7 +68,7 @@ class WhoscoredSpider(scrapy.Spider):
             
             yield SplashRequest(match_link, self.parse,
                 endpoint='render.html',
-                args={'wait': 2},
+                args={'wait': 3},
                 priority=-1
                 )
                 
@@ -134,7 +79,7 @@ class WhoscoredSpider(scrapy.Spider):
                 
                 yield SplashRequest(retry_url, self.parse,
                     endpoint='render.html',
-                    args={'wait': 2},
+                    args={'wait': 3},
                     dont_filter=True,
                     priority=1
                     )         
@@ -185,7 +130,7 @@ class WhoscoredSpider(scrapy.Spider):
             request = SplashRequest(match_report_link, 
                 callback=self.parse_match_report,
                 endpoint='render.html',
-                args={'wait': 2},
+                args={'wait': 3},
                 meta = {'match':match, 'match_link': response.url},
                 dont_filter=True,
                 )
